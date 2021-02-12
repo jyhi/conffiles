@@ -1,0 +1,183 @@
+# Sway (https://swaywm.org) configuration file for tp-x200-r.yhi.moe
+# Junde Yhi <junde@yhi.moe> / <lmy441900@tp-x200-r.yhi.moe>
+
+set $config /home/lmy441900/.config/sway
+set $scripts $config/scripts
+
+# Inputs
+input type:pointer {
+  accel_profile adaptive
+  pointer_accel -0.6
+}
+
+# Outputs
+set $main_display LVDS-1
+output $main_display mode 1280x800@49.993999Hz subpixel rgb scale 1
+output * bg /usr/share/backgrounds/sway/Sway_Wallpaper_Blue_1920x1080.png fill
+
+# Wayland go brrr
+xwayland disable
+
+# Sway environment
+focus_follows_mouse no
+
+bar {
+  id main
+  mode dock
+  position top
+  output $main_display
+
+  #status_command "while true; do TEMP=$(( $(cat /sys/class/thermal/thermal_zone0/temp) / 1000 )); BAT=$(cat /sys/class/power_supply/BAT0/capacity); DATE=$(date +'%A, %d %b %Y %R'); echo CPU Temp $TEMP \| Battery $BAT \| $DATE; sleep 15; done"
+  swaybar_command waybar
+
+  icon_theme "Arc-Dark"
+
+  colors {
+    statusline #ffffff
+    background #323232
+    inactive_workspace #32323200 #32323200 #5c5c5c
+  }
+}
+
+# Autostarts
+exec mako
+
+set $up up
+set $down down
+set $left left
+set $right right
+
+# Frequently use applications
+set $launcher mauncher-launcher
+set $term gnome-terminal
+set $browser firefox
+set $mail thunderbird
+set $office libreoffice
+set $screenshot grim -g "$(slurp)"
+
+# Shortcuts
+set $mod mod4
+bindsym $mod+alt+l exec $launcher
+bindsym $mod+space exec $launcher
+bindsym $mod+alt+t exec $term
+bindsym $mod+return exec $term
+bindsym $mod+alt+b exec $browser
+bindsym $mod+alt+m exec $mail
+bindsym $mod+alt+i exec telegram-desktop
+bindsym $mod+alt+o exec $office
+bindsym $mod+alt+k exec keepassxc
+bindsym $mod+alt+s exec $screenshot
+bindsym $mod+shift+s exec $screenshot
+
+# Multimedia keys
+# https://wiki.archlinux.org/index.php/Sway#Custom_keybindings
+bindsym XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +5%
+bindsym XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -5%
+#bindsym XF86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle
+#bindsym XF86AudioMicMute exec pactl set-source-mute @DEFAULT_SOURCE@ toggle
+#bindsym XF86MonBrightnessUp exec light -s "sysfs/backlight/intel_backlight" -A 5
+#bindsym XF86MonBrightnessDown exec light -s "sysfs/backlight/intel_backlight" -U 5
+
+# Sway controls
+set $sysmenu "System: (l)ock session, (r)eload Sway, (q)uit Sway, (s)uspend, re(b)oot, s(h)utdown. Press [Enter] to shutdown. Press [Esc] to cancel."
+mode $sysmenu {
+  bindsym l mode "default", exec swaylock
+  bindsym r mode "default", reload
+  bindsym q mode "default", exit
+  bindsym s mode "default", exec systemctl suspend
+  bindsym b mode "default", exec systemctl reboot
+  bindsym h mode "default", exec systemctl poweroff
+
+  bindsym return mode "default", exec systemctl poweroff
+  bindsym escape mode "default"
+}
+bindsym $mod+ctrl+delete mode $sysmenu
+bindsym ctrl+alt+delete mode $sysmenu
+
+# Screen power (ThinkVantage)
+bindsym --locked XF86Launch1 exec $scripts/dpms_toggle.sh
+
+# Misc
+bindsym $mod+q kill
+bindsym alt+f4 kill
+bindsym $mod+l exec swaylock
+
+#bindswitch lid:off exec swaylock
+
+# Moving the focus
+bindsym $mod+$up focus up
+bindsym $mod+$down focus down
+bindsym $mod+$left focus left
+bindsym $mod+$right focus right
+bindsym $mod+tab focus next
+bindsym $mod+shift+tab focus prev
+
+# Moving the window
+bindsym $mod+shift+$up move up
+bindsym $mod+shift+$down move down
+bindsym $mod+shift+$left move left
+bindsym $mod+shift+$right move right
+
+# Switching to a workspace
+bindsym $mod+1 workspace number 1
+bindsym $mod+2 workspace number 2
+bindsym $mod+3 workspace number 3
+bindsym $mod+4 workspace number 4
+bindsym $mod+5 workspace number 5
+bindsym $mod+6 workspace number 6
+bindsym $mod+7 workspace number 7
+bindsym $mod+8 workspace number 8
+bindsym $mod+9 workspace number 9
+bindsym $mod+0 workspace number 10
+bindsym $mod+prior workspace prev
+bindsym $mod+next workspace next
+
+# Moving a container to a workspace
+bindsym $mod+shift+1 move container to workspace number 1
+bindsym $mod+shift+2 move container to workspace number 2
+bindsym $mod+shift+3 move container to workspace number 3
+bindsym $mod+shift+4 move container to workspace number 4
+bindsym $mod+shift+5 move container to workspace number 5
+bindsym $mod+shift+6 move container to workspace number 6
+bindsym $mod+shift+7 move container to workspace number 7
+bindsym $mod+shift+8 move container to workspace number 8
+bindsym $mod+shift+9 move container to workspace number 9
+bindsym $mod+shift+0 move container to workspace number 10
+bindsym $mod+shift+prior move container to workspace prev
+bindsym $mod+shift+next move container to workspace next
+
+# Layout: fullscreen
+bindsym $mod+f fullscreen
+
+# Layout: set split orientation
+bindsym $mod+v splitv
+bindsym $mod+b splith
+
+# Layout: switching
+bindsym $mod+backslash layout toggle split
+bindsym $mod+shift+backslash layout toggle split tabbed stacking
+bindsym $mod+backspace floating toggle
+
+# Swap focus between the tiling area and the floating area
+bindsym $mod+grave focus mode_toggle
+
+# Move focus between the parents and children
+#bindsym $mod+a focus parent
+#bindsym $mod+s focus child
+
+# Scratchpad: move into, call out (and cycle)
+bindsym $mod+shift+minus move scratchpad
+bindsym $mod+minus scratchpad show
+
+# Resize mode
+set $resize "Resize Mode. Press [Enter] or [Esc] to go back."
+mode $resize {
+  bindsym $up resize shrink height 10px
+  bindsym $down resize grow height 10px
+  bindsym $left resize shrink width 10px
+  bindsym $right resize grow width 10px
+
+  bindsym Return mode "default"
+  bindsym Escape mode "default"
+}
+bindsym $mod+r mode $resize

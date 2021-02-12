@@ -1,0 +1,43 @@
+{
+  "position": "top",
+  "output": ["LVDS-1"],
+  "modules-left": ["sway/workspaces", "tray", "sway/mode"],
+  "modules-center": ["clock"],
+  "modules-right": ["cpu", "memory", "temperature", "pulseaudio", "network", "battery"],
+
+  "clock": {
+    "format": "{:%A, %d %b %Y, %R}"
+  },
+
+  "cpu": {
+    "format": "{usage}% "
+  },
+
+  "memory": {
+    "format": "{percentage}% "
+  },
+
+  "temperature": {
+    "format": "{temperatureC}°C ",
+  },
+
+  "pulseaudio": {
+    "format": "{volume}% {icon}",
+    "format-muted": "",
+    "format-icons": ["", ""]
+  },
+
+  "network": {
+    "format": "{ifname}: {ipaddr}/{cidr}",
+    "format-ethernet": "{ipaddr}/{cidr} ",
+    "format-wifi": "{signalStrength}% {frequency} {essid} {ipaddr}/{cidr} ",
+    "format-disconnected": "No Network"
+  },
+
+  "battery": {
+    "format": "{capacity}% {icon}",
+    "format-icons": ["", "", "", "", ""]
+  },
+  
+  "_unused": ""
+}
