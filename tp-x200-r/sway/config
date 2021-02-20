@@ -21,6 +21,9 @@ xwayland disable
 # Sway environment
 focus_follows_mouse no
 
+# Special treatments
+for_window [app_id="org.keepassxc.KeePassXC"] floating enable
+
 bar {
   id main
   mode dock
