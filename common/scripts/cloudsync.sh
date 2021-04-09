@@ -1,14 +1,23 @@
 #!/bin/sh
 set -e -o pipefail
 
-DIRS='Documents Pictures'
-
-if [ ! "$REMOTE" ]; then
-  echo '$REMOTE must be defined first.'
+if [ ! "$REMOTES" ]; then
+  echo '$REMOTES must be defined as a space-separated list of rclone remotes.'
   exit 1
 fi
 
-for dir in $DIRS; do
-  echo "Syncing $dir to $REMOTE..."
-  rclone sync --progress "$HOME/$dir/" "$REMOTE:$(cat /etc/hostname)/$dir/"
+if [ ! "$DIRS" ]; then
+  echo '$DIRS must be defined as a space-separated list of directories.'
+  exit 1
+fi
+
+if [ "$PROGRESS" ]; then
+  RCLONE_FLAGS+=" --progress "
+fi
+
+for remote in $REMOTES; do
+  for dir in $DIRS; do
+    echo "Syncing $dir to $remote..."
+    rclone sync $RCLONE_FLAGS "$HOME/$dir/" "$remote:$(cat /etc/hostname)/$dir/"
+  done
 done
