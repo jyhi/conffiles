@@ -1,6 +1,10 @@
 #!/bin/sh
 set -e -o pipefail
 
+if [ -f "$HOME/.config/cloudsync/config.sh" ]; then
+  . "$HOME/.config/cloudsync/config.sh"
+fi
+
 if [ ! "$REMOTES" ]; then
   echo '$REMOTES must be defined as a space-separated list of rclone remotes.'
   exit 1
