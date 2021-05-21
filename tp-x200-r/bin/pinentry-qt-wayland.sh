@@ -1,4 +1,6 @@
 #!/bin/sh
 
 export QT_QPA_PLATFORM=wayland-egl
-/usr/bin/pinentry-qt $@
+export DISPLAY=$WAYLAND_DISPLAY
+export LC_TYPE=$LANG
+exec /usr/bin/pinentry-qt $@
