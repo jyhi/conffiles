@@ -52,7 +52,7 @@ set $right right
 
 # Frequently use applications
 set $launcher mauncher-launcher
-set $term gnome-terminal
+set $term $scripts/alacritty_gl_sw.sh
 set $browser firefox
 set $mail thunderbird
 set $office libreoffice
