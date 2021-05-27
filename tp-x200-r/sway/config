@@ -68,7 +68,8 @@ bindsym $mod+alt+t exec $term
 bindsym $mod+return exec $term
 bindsym $mod+alt+b exec $browser
 bindsym $mod+alt+m exec $mail
-bindsym $mod+alt+i exec telegram-desktop
+bindsym $mod+alt+i exec quassel
+bindsym $mod+alt+shift+i exec telegram-desktop
 bindsym $mod+alt+o exec $office
 bindsym $mod+alt+k exec keepassxc
 bindsym $mod+alt+s exec $screenshotregion
