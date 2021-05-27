@@ -106,7 +106,6 @@ bindsym --locked XF86Launch1 exec $scripts/dpms_toggle.sh
 
 # Misc
 bindsym $mod+q kill
-bindsym alt+f4 kill
 bindsym $mod+l exec swaylock
 
 #bindswitch lid:off exec swaylock
@@ -120,10 +119,10 @@ bindsym $mod+tab focus next
 bindsym $mod+shift+tab focus prev
 
 # Moving the window
-bindsym $mod+shift+$up move up
-bindsym $mod+shift+$down move down
-bindsym $mod+shift+$left move left
-bindsym $mod+shift+$right move right
+bindsym $mod+ctrl+$up move up
+bindsym $mod+ctrl+$down move down
+bindsym $mod+ctrl+$left move left
+bindsym $mod+ctrl+$right move right
 
 # Switching to a workspace
 bindsym $mod+1 workspace number 1
@@ -140,21 +139,21 @@ bindsym $mod+prior workspace prev
 bindsym $mod+next workspace next
 
 # Moving a container to a workspace
-bindsym $mod+shift+1 move container to workspace number 1
-bindsym $mod+shift+2 move container to workspace number 2
-bindsym $mod+shift+3 move container to workspace number 3
-bindsym $mod+shift+4 move container to workspace number 4
-bindsym $mod+shift+5 move container to workspace number 5
-bindsym $mod+shift+6 move container to workspace number 6
-bindsym $mod+shift+7 move container to workspace number 7
-bindsym $mod+shift+8 move container to workspace number 8
-bindsym $mod+shift+9 move container to workspace number 9
-bindsym $mod+shift+0 move container to workspace number 10
-bindsym $mod+shift+prior move container to workspace prev
-bindsym $mod+shift+next move container to workspace next
+bindsym $mod+ctrl+1 move container to workspace number 1
+bindsym $mod+ctrl+2 move container to workspace number 2
+bindsym $mod+ctrl+3 move container to workspace number 3
+bindsym $mod+ctrl+4 move container to workspace number 4
+bindsym $mod+ctrl+5 move container to workspace number 5
+bindsym $mod+ctrl+6 move container to workspace number 6
+bindsym $mod+ctrl+7 move container to workspace number 7
+bindsym $mod+ctrl+8 move container to workspace number 8
+bindsym $mod+ctrl+9 move container to workspace number 9
+bindsym $mod+ctrl+0 move container to workspace number 10
+bindsym $mod+ctrl+prior move container to workspace prev
+bindsym $mod+ctrl+next move container to workspace next
 
 # Layout: fullscreen
-bindsym $mod+f fullscreen
+bindsym $mod+ctrl+f fullscreen
 
 # Layout: set split orientation
 bindsym $mod+v splitv
@@ -173,7 +172,7 @@ bindsym $mod+grave focus mode_toggle
 #bindsym $mod+s focus child
 
 # Scratchpad: move into, call out (and cycle)
-bindsym $mod+shift+minus move scratchpad
+bindsym $mod+ctrl+minus move scratchpad
 bindsym $mod+minus scratchpad show
 
 # Resize mode
@@ -187,4 +186,4 @@ mode $resize {
   bindsym Return mode "default"
   bindsym Escape mode "default"
 }
-bindsym $mod+r mode $resize
+bindsym $mod+ctrl+r mode $resize
