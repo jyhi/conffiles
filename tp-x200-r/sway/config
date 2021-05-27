@@ -57,7 +57,8 @@ set $term $scripts/alacritty_gl_sw.sh
 set $browser firefox
 set $mail thunderbird
 set $office libreoffice
-set $screenshot grim -g "$(slurp)"
+set $screenshotregion grim -g "$(slurp)"
+set $screenshotfull grim
 
 # Shortcuts
 set $mod mod4
@@ -70,8 +71,8 @@ bindsym $mod+alt+m exec $mail
 bindsym $mod+alt+i exec telegram-desktop
 bindsym $mod+alt+o exec $office
 bindsym $mod+alt+k exec keepassxc
-bindsym $mod+alt+s exec $screenshot
-bindsym $mod+shift+s exec $screenshot
+bindsym $mod+alt+s exec $screenshotregion
+bindsym $mod+shift+s exec $screenshotregion
 
 # Multimedia keys
 # https://wiki.archlinux.org/index.php/Sway#Custom_keybindings
@@ -81,6 +82,7 @@ bindsym XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -5%
 #bindsym XF86AudioMicMute exec pactl set-source-mute @DEFAULT_SOURCE@ toggle
 #bindsym XF86MonBrightnessUp exec light -s "sysfs/backlight/intel_backlight" -A 5
 #bindsym XF86MonBrightnessDown exec light -s "sysfs/backlight/intel_backlight" -U 5
+bindsym Print exec $screenshotfull
 
 # Sway controls
 set $sysmenu "System: (l)ock session, (r)eload Sway, (q)uit Sway, (s)uspend, re(b)oot, s(h)utdown. Press [Enter] to shutdown. Press [Esc] to cancel."
