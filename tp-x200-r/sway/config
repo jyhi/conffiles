@@ -23,6 +23,7 @@ focus_follows_mouse no
 
 # Special treatments
 for_window [app_id="org.keepassxc.KeePassXC"] floating enable
+exec dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway
 
 bar {
   id main
@@ -44,7 +45,6 @@ bar {
 
 # Autostarts
 exec mako
-exec dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway
 
 set $up up
 set $down down
