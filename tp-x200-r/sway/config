@@ -20,6 +20,7 @@ xwayland disable
 
 # Sway environment
 focus_follows_mouse no
+workspace_layout tabbed
 
 # Special treatments
 for_window [app_id="org.keepassxc.KeePassXC"] floating enable
