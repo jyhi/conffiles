@@ -12,7 +12,7 @@ input type:pointer {
 
 # Outputs
 set $main_display LVDS-1
-output $main_display mode 1280x800@49.993999Hz subpixel rgb scale 1
+output $main_display mode 1280x800@49.994Hz subpixel rgb scale 1
 output * bg /usr/share/backgrounds/sway/Sway_Wallpaper_Blue_1920x1080.png fill
 
 # Wayland go brrr
@@ -24,7 +24,7 @@ workspace_layout tabbed
 
 # Special treatments
 for_window [app_id="org.keepassxc.KeePassXC"] floating enable
-exec dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway
+exec_always dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway
 
 bar {
   id main
