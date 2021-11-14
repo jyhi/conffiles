@@ -1,0 +1,5 @@
+
+# configs/tp-x200-r/bash_logout
+if [ "$TERM" = "linux" ]; then
+  setterm --powersave powerdown --blank 1
+fi

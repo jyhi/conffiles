@@ -1,0 +1,5 @@
+
+# configs/tp-x200-r/bash_profile
+if [ "$TERM" = "linux" ]; then
+  setterm --powersave powerdown --blank 15
+fi
