@@ -1,5 +1,5 @@
 #!/bin/sh
-set -e -o pipefail
+set -eu -o pipefail
 
 if [ -f "$HOME/.config/cloudsync/config.sh" ]; then
   . "$HOME/.config/cloudsync/config.sh"
@@ -19,9 +19,13 @@ if [ "$PROGRESS" ]; then
   RCLONE_FLAGS+=" --progress "
 fi
 
+if [ ! "$HOSTNAME" ]; then
+  HOSTNAME=$(cat /etc/hostname)
+fi
+
 for remote in $REMOTES; do
   for dir in $DIRS; do
     echo "Syncing $dir to $remote..."
-    rclone sync $RCLONE_FLAGS "$HOME/$dir/" "$remote:$(cat /etc/hostname)/$dir/"
+    rclone sync $RCLONE_FLAGS "$HOME/$dir/" "$remote:Sync/$HOSTNAME/$dir/"
   done
 done
