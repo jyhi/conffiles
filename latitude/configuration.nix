@@ -12,7 +12,7 @@
 
   boot.initrd.luks.devices = {
     "nixos" = {
-      device = /dev/disk/by-partlabel/linux-system;
+      device = "/dev/disk/by-partlabel/linux-system";
       allowDiscards = true;
       bypassWorkqueues = true;
     };
@@ -32,7 +32,7 @@
   };
 
   swapDevices = [{
-    device = /dev/disk/by-partlabel/linux-swap;
+    device = "/dev/disk/by-partlabel/linux-swap";
     discardPolicy = "both";
     randomEncryption = {
       enable = true;
