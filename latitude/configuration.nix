@@ -51,7 +51,6 @@
 
   environment = {
     memoryAllocator.provider = "mimalloc";
-    noXlibs = true; # Wayland go brrr
     localBinInPath = true;
   };
 
