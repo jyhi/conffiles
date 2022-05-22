@@ -161,7 +161,10 @@
     extraSessionCommands = "";
   };
 
-  hardware.enableRedistributableFirmware = true;
+  hardware = {
+    cpu.intel.updateMicrocode = true;
+    enableRedistributableFirmware = true;
+  };
 
   environment.systemPackages = with pkgs; [
     gnupg
