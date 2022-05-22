@@ -1,7 +1,6 @@
 # NixOS Configuration for <latitude.yhi.moe>.
 
 { pkgs, ... }: {
-
   boot.loader = {
     systemd-boot.enable = true;
     timeout = 3;
@@ -12,8 +11,8 @@
   boot.tmpOnTmpfs = true;
 
   boot.initrd.luks.devices = {
-    "nix" = {
-      device = "/dev/disk/by-partlabel/linux-system";
+    "nixos" = {
+      device = /dev/disk/by-partlabel/linux-system;
       allowDiscards = true;
       bypassWorkqueues = true;
     };
@@ -25,30 +24,15 @@
       options = [ "rw" "size=10%" "mode=755" ];
     };
 
-    "/boot" = {
-      device = "/dev/disk/by-partlabel/esp";
-      fsType = "vfat";
-      options = [
-        "rw"
-        "nosuid"
-        "nodev"
-        "noexec"
-        "noatime"
-        "fmask=0177"
-        "dmask=0077"
-        "discard"
-      ];
-    };
-
     "/nix" = {
-      device = "/dev/mapper/nix";
+      device = "/dev/mapper/nixos";
       fsType = "f2fs";
       options = [ "rw" "nodev" "noatime" ];
     };
   };
 
   swapDevices = [{
-    device = "/dev/disk/by-partlabel/linux-swap";
+    device = /dev/disk/by-partlabel/linux-swap;
     discardPolicy = "both";
     randomEncryption = {
       enable = true;
@@ -80,7 +64,7 @@
       initialHashedPassword =
         "$y$j9T$W5lCwVeck9cPRQHIDZKTq/$Xm3K0x.yY7LDE9K30bc.J.1sCV76e/gzbszLEBWSbR4";
       group = "users";
-      extraGroups = [ "wheel" "networkmanager" ];
+      extraGroups = [ "wheel" "video" "networkmanager" "kvm" ];
       home = "/home/jyhi";
       createHome = true;
     };
@@ -92,7 +76,7 @@
   };
 
   networking = {
-    # Until NixOS fully switch to nftables...
+    # Until NixOS fully switches to nftables...
     firewall.enable = false;
     nftables = {
       enable = true;
@@ -165,6 +149,15 @@
   programs.sway = {
     enable = true;
     wrapperFeatures.gtk = true;
+    extraPackages = with pkgs; [
+      swaylock
+      swayidle
+      waybar
+      brightnessctl
+      wl-clipboard
+      mako # notification daemon
+      wofi # menu
+    ];
     extraSessionCommands = "";
   };
 
@@ -177,22 +170,4 @@
     firefox-wayland
     thunderbird-wayland
   ];
-
-  impermanence = builtins.fetchGit {
-    url = "https://github.com/nix-community/impermanence";
-    rev = "2f39baeb7d039fda5fc8225111bb79474138e6f4";
-  };
-
-  imports = [ "${impermanence}/nixos.nix" ];
-
-  environment.persistence."/nix/persist" = {
-    hideMounts = true;
-    directories = [ "/var/log" "/var/lib/systemd/coredump" ];
-    files = [ "/etc/machine-id" ];
-    users."jyhi" = {
-      directories = [ "Documents" "Downloads" "Music" "Pictures" "Videos" ];
-      files = [ ];
-    };
-  };
-
 }
