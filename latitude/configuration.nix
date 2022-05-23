@@ -1,33 +1,55 @@
 # NixOS Configuration for <latitude.yhi.moe>.
 
-{ pkgs, ... }: {
-  boot.loader = {
-    systemd-boot.enable = true;
-    timeout = 3;
-    efi.canTouchEfiVariables = true;
-    generationsDir.copyKernels = true;
+{ pkgs, ... }:
+let
+  pathImpermanence = builtins.fetchGit {
+    url = "https://github.com/nix-community/impermanence";
+    ref = "master";
+    rev = "2f39baeb7d039fda5fc8225111bb79474138e6f4";
   };
+in {
+  imports = [ "${pathImpermanence}/nixos.nix" ];
 
-  boot.tmpOnTmpfs = true;
-
-  boot.initrd.luks.devices = {
-    "nixos" = {
-      device = "/dev/disk/by-partlabel/linux-system";
-      allowDiscards = true;
-      bypassWorkqueues = true;
+  boot = {
+    loader = {
+      systemd-boot.enable = true;
+      timeout = 3;
+      efi.canTouchEfiVariables = true;
+      generationsDir.copyKernels = true;
+    };
+    supportedFilesystems = [ "f2fs" ];
+    tmpOnTmpfs = true;
+    initrd.luks.devices = {
+      "nixos" = {
+        device = "/dev/disk/by-partlabel/linux-system";
+        allowDiscards = true;
+        bypassWorkqueues = true;
+      };
     };
   };
 
   fileSystems = {
     "/" = {
       fsType = "tmpfs";
-      options = [ "rw" "size=10%" "mode=755" ];
+      options = [ "rw" "noatime" "nodev" "nosuid" "mode=755" ];
     };
 
     "/nix" = {
       device = "/dev/mapper/nixos";
       fsType = "f2fs";
-      options = [ "rw" "nodev" "noatime" ];
+      # NOTE: format this partition with:
+      #   -O extra_attr,inode_checksum,sb_checksum,compression
+      options = [
+        "rw"
+        "noatime"
+        "nodev"
+        # https://wiki.archlinux.org/title/F2FS#Recommended_mount_options
+        # whint_mode has been deprecated!
+        "compress_algorithm=zstd:6"
+        "compress_chksum"
+        "atgc"
+        "gc_merge"
+      ];
     };
   };
 
@@ -54,25 +76,22 @@
     localBinInPath = true;
   };
 
-  users.mutableUsers = false;
-  users.users = {
-    "jyhi" = {
-      uid = 1001;
-      description = "Junde Yhi";
-      isNormalUser = true;
-      initialHashedPassword =
-        "$y$j9T$W5lCwVeck9cPRQHIDZKTq/$Xm3K0x.yY7LDE9K30bc.J.1sCV76e/gzbszLEBWSbR4";
-      group = "users";
-      extraGroups = [ "wheel" "video" "networkmanager" "kvm" ];
-      home = "/home/jyhi";
-      createHome = true;
+  users = {
+    mutableUsers = false;
+    defaultUserShell = pkgs.dash;
+    users = {
+      "jyhi" = {
+        uid = 1001;
+        description = "Junde Yhi";
+        isNormalUser = true;
+        initialHashedPassword =
+          "$5$qJVeybe.0P7E9CQu$wvN4gJWLVY2U1V.sACa4.KeDw0muEY0yKW/Ez6YQaZB";
+        extraGroups = [ "wheel" "video" "networkmanager" ];
+      };
     };
   };
 
-  documentation = {
-    info.enable = false;
-    nixos.enable = false;
-  };
+  documentation.info.enable = false;
 
   networking = {
     # Until NixOS fully switches to nftables...
@@ -154,10 +173,20 @@
       waybar
       brightnessctl
       wl-clipboard
+      slurp # screen region selector
+      grim # screenshot
       mako # notification daemon
       wofi # menu
     ];
-    extraSessionCommands = "";
+
+    # https://github.com/swaywm/sway/wiki/Running-programs-natively-under-wayland
+    extraSessionCommands = ''
+      export QT_QPA_PLATFORM=wayland-egl
+      export QT_WAYLAND_FORCE_DPI=physical
+      export QT_WAYLAND_DISABLE_WINDOWDECORATION=1
+      export SDL_VIDEODRIVER=wayland
+      export _JAVA_AWT_WM_NONREPARENTING=1
+    '';
   };
 
   hardware = {
@@ -165,11 +194,33 @@
     enableRedistributableFirmware = true;
   };
 
-  environment.systemPackages = with pkgs; [
-    gnupg
-    git
-    alacritty
-    firefox-wayland
-    thunderbird-wayland
-  ];
+  environment.persistence."/nix/pers" = {
+    hideMounts = true;
+    directories = [ "/var/log" ];
+    files = [ "/etc/machine-id" ];
+    users."jyhi" = {
+      directories = [
+        {
+          directory = ".ssh";
+          mode = "0700";
+        }
+        {
+          directory = ".gnupg";
+          mode = "0700";
+        }
+        ".config/sway"
+        ".config/swaylock"
+        ".config/waybar"
+        "Applications"
+        "Documents"
+        "Downloads"
+        "Music"
+        "Pictures"
+        "Videos"
+      ];
+      files = [ ".vimrc" ];
+    };
+  };
+
+  environment.systemPackages = with pkgs; [ vim gnupg git ];
 }
