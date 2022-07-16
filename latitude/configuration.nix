@@ -10,6 +10,8 @@ let
 in {
   imports = [ "${pathImpermanence}/nixos.nix" ];
 
+  system.stateVersion = "22.05";
+
   boot = {
     loader = {
       systemd-boot.enable = true;
@@ -64,6 +66,11 @@ in {
 
   zramSwap.enable = true;
 
+  hardware = {
+    cpu.intel.updateMicrocode = true;
+    enableRedistributableFirmware = true;
+  };
+
   networking = {
     hostName = "latitude";
     domain = "yhi.moe";
@@ -74,6 +81,11 @@ in {
   environment = {
     memoryAllocator.provider = "mimalloc";
     localBinInPath = true;
+    sessionVariables = {
+      # Configure Electron apps to run on Wayland
+      # https://nixos.org/manual/nixos/stable/release-notes.html#sec-release-22.05-notable-changes
+      NIXOS_OZONE_WL = "1";
+    };
   };
 
   users = {
@@ -94,32 +106,30 @@ in {
   documentation.info.enable = false;
 
   networking = {
-    # Until NixOS fully switches to nftables...
     firewall.enable = false;
     nftables = {
       enable = true;
       ruleset = ''
-        flush ruleset
-
         table inet filter {
           chain input {
-            type filter hook input priority filter; policy drop
-
-            ct state invalid drop
-            ct state { established, related } accept
+            type filter hook input priority filter; policy drop;
 
             iifname lo accept
+            ct state {established, related} accept
+            ct state invalid drop
 
             ip protocol icmp accept
             ip6 nexthdr icmpv6 accept
+
+            tcp dport 50022 accept
           }
 
           chain forward {
-            type filter hook forward priority filter; policy drop
+            type filter hook forward priority filter; policy drop;
           }
 
           chain output {
-            type filter hook output priority filter; policy accept
+            type filter hook output priority filter; policy accept;
           }
         }
       '';
@@ -134,6 +144,11 @@ in {
   };
 
   services = {
+    openssh = {
+      enable = false;
+      ports = [ 50022 ];
+    };
+
     tlp = {
       enable = true;
       settings = {
@@ -158,41 +173,59 @@ in {
     };
   };
 
+  programs = {
+    vim.defaultEditor = true;
+
+    git = {
+      enable = true;
+      lfs.enable = true;
+    };
+
+    gnupg = {
+      agent = {
+        enable = true;
+        pinentryFlavor = "qt";
+      };
+      dirmngr.enable = true;
+    };
+
+    sway = {
+      enable = true;
+      wrapperFeatures.gtk = true;
+      extraPackages = with pkgs; [
+        swaylock
+        waybar
+        brightnessctl
+        wl-clipboard
+        slurp # screen region selector
+        grim # screenshot
+        mako # notification daemon
+        rofi-wayland # menu
+      ];
+
+      # https://github.com/swaywm/sway/wiki/Running-programs-natively-under-wayland
+      extraSessionCommands = ''
+        export QT_QPA_PLATFORM=wayland-egl
+        export QT_WAYLAND_FORCE_DPI=physical
+        export QT_WAYLAND_DISABLE_WINDOWDECORATION=1
+        export SDL_VIDEODRIVER=wayland
+        export _JAVA_AWT_WM_NONREPARENTING=1
+      '';
+    };
+  };
+
   xdg.portal = {
     enable = true;
     gtkUsePortal = true;
     wlr.enable = true;
   };
 
-  programs.sway = {
-    enable = true;
-    wrapperFeatures.gtk = true;
-    extraPackages = with pkgs; [
-      swaylock
-      swayidle
-      waybar
-      brightnessctl
-      wl-clipboard
-      slurp # screen region selector
-      grim # screenshot
-      mako # notification daemon
-      wofi # menu
-    ];
-
-    # https://github.com/swaywm/sway/wiki/Running-programs-natively-under-wayland
-    extraSessionCommands = ''
-      export QT_QPA_PLATFORM=wayland-egl
-      export QT_WAYLAND_FORCE_DPI=physical
-      export QT_WAYLAND_DISABLE_WINDOWDECORATION=1
-      export SDL_VIDEODRIVER=wayland
-      export _JAVA_AWT_WM_NONREPARENTING=1
-    '';
-  };
-
-  hardware = {
-    cpu.intel.updateMicrocode = true;
-    enableRedistributableFirmware = true;
-  };
+  # environment.systemPackages = with pkgs; [ ];
+  users.users."jyhi".packages = with pkgs; [
+    firefox-wayland
+    thunderbird-wayland
+    vscodium
+  ];
 
   environment.persistence."/nix/pers" = {
     hideMounts = true;
@@ -221,6 +254,4 @@ in {
       files = [ ".vimrc" ];
     };
   };
-
-  environment.systemPackages = with pkgs; [ vim gnupg git ];
 }
