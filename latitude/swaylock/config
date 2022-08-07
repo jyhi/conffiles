@@ -1,5 +1,6 @@
 #image=/usr/share/backgrounds/sway/Sway_Wallpaper_Blue_1920x1080.png
 #scaling=fill
+daemonize
 color=000000
 indicator-idle-visible
 indicator-caps-lock

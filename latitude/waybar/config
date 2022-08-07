@@ -1,40 +1,61 @@
 {
-  "modules-left": ["wlr/workspaces", "tray", "sway/mode"],
-  "modules-center": ["clock"],
-  "modules-right": ["cpu", "memory", "temperature", "pulseaudio", "network", "battery"],
+  "spacing": 6,
+  "modules-left": ["clock", "tray", "sway/workspaces", "sway/mode"],
+  "modules-right": ["inhibitor", "pulseaudio", "bluetooth", "network", "cpu", "memory", "temperature", "battery"],
 
   "clock": {
-    "format": "{:%A, %d %b %Y, %R}"
+    "format": "{:%a %d %b %Y %R %Z}"
   },
 
-  "cpu": {
-    "format": "{usage}% "
+  "sway/mode": {
+    "format": "\uf05a {}"
   },
 
-  "memory": {
-    "format": "{percentage}% "
-  },
-
-  "temperature": {
-    "format": "{temperatureC}°C "
+  "inhibitor": {
+    "what": ["idle", "sleep", "handle-lid-switch"],
+    "format": "\uf0f4"
   },
 
   "pulseaudio": {
-    "format": "{volume}% {icon}",
-    "format-muted": "",
-    "format-icons": ["", ""]
+    "format": "{icon} {volume} {format_source}",
+    "format-bluetooth": "{icon}\uf293 {volume} {format_source}",
+    "format-muted": "\uf6a9 {format_source}",
+    "format-source": "\uf130 {volume}",
+    "format-source-muted": "\uf131",
+    "format-icons": {
+      "default": ["\uf027", "\uf028"]
+    }
   },
 
   "network": {
-    "format": "{ifname}: {ipaddr}/{cidr}",
-    "format-ethernet": "{ipaddr}/{cidr} ",
-    "format-wifi": "{signalStrength}% {frequency} {essid} {ipaddr}/{cidr} ",
-    "format-disconnected": "No Network"
+    "interval": 9,
+    "format": "\uf6ff {ipaddr}/{cidr}",
+    "format-ethernet": "\uf796 {ipaddr}/{cidr}",
+    "format-wifi": "\uf1eb {essid} {frequency}GHz {signalStrength}%",
+    "format-disconnected": "\uf6ff ?",
+    "format-disabled": "\ue22d"
+  },
+
+  "cpu": {
+    "interval": 3,
+    "format": "\uf2db {usage:02d}% {avg_frequency:0.2f}GHz"
+  },
+
+  "memory": {
+    "interval": 3,
+    "format": "\uf538 {used:0.1f}G/{total:0.1f}G"
+  },
+
+  "temperature": {
+    "interval": 3,
+    "thermal-zone": 7,
+    "format": "\uf2c9 {temperatureC}°C"
   },
 
   "battery": {
-    "format": "{capacity}% {icon}",
-    "format-icons": ["", "", "", "", ""]
+    "interval": 9,
+    "format": "{icon} {capacity}% \uf0e7 {power:0.1f}W",
+    "format-icons": ["\uf244", "\uf243", "\uf242", "\uf241", "\uf240"]
   },
   
   "_unused": ""

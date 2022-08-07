@@ -1,37 +1,58 @@
 # Sway (https://swaywm.org) configuration file for <latitude.yhi.moe>
 
-# Inputs TODO
+# Inputs
+input type:touchpad {
+  tap enabled
+  tap_button_map lrm
+  natural_scroll enabled
+}
 
-# Outputs TODO
+# Outputs
+set $mainscreen eDP-1
+
+output $mainscreen {
+  mode 1920x1080@48.010Hz
+  scale 1.25
+}
+
+output * background /run/current-system/sw/share/backgrounds/sway/Sway_Wallpaper_Blue_1920x1080.png fit
 
 # Wayland go brrr
 xwayland disable
 
 # Sway environment
+exec dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
+
+smart_borders on
 focus_follows_mouse no
 workspace_layout tabbed
+
+bar main swaybar_command waybar
+
+# Special treatments
+for_window [app_id="org.keepassxc.KeePassXC" title="KeePassXC - Browser Access Request"] floating enable
+for_window [app_id="pcmanfm-qt"] floating enable
+
+# Frequently used applications
+set $launcher rofi -modi "drun,run,filebrowser" -show-icons -show
+set $terminal alacritty
+set $webbrowser firefox
+set $mailclient thunderbird
+set $filebrowser pcmanfm-qt
+set $virtmngr virt-manager
+set $screenshotfull grim
+set $screenshotregional $screenshotfull -g "$(slurp)"
 
 # Meta the modifier
 set $mod mod4
 
-bar main {
-  position top
-  mode hide
-  modifier $mod
-  swaybar_command waybar
-}
-
-# Special treatments
-for_window [app_id="org.keepassxc.KeePassXC"] floating enable
-
-# Frequently used applications
-set $launcher rofi
-set $terminal alacritty
-set $browser firefox
-set $mail thunderbird
-set $office libreoffice
-set $screenshotregional grim -g "$(slurp)"
-set $screenshotfull grim
+# Shortcuts - applications
+bindsym $mod+alt+space exec $launcher
+bindsym $mod+alt+t exec $terminal
+bindsym $mod+alt+b exec $webbrowser
+bindsym $mod+alt+f exec $filebrowser
+bindsym $mod+alt+m exec $mailclient
+bindsym $mod+alt+v exec $virtmngr
 
 # Shortcuts - window actions on the current focus - mod + key
 bindsym $mod+q kill
@@ -101,19 +122,34 @@ mode $sysmenu {
   bindsym q mode "default", exit
   bindsym s mode "default", exec systemctl suspend
   bindsym b mode "default", exec systemctl reboot
+  bindsym shift+b mode "default", exec systemctl reboot --firmware-setup
   bindsym h mode "default", exec systemctl poweroff
 
-  bindsym return mode "default", exec systemctl poweroff
   bindsym escape mode "default"
 }
 
 bindsym $mod+ctrl+delete mode $sysmenu
-bindsym $mod+ctrl+l exec swaylock
 
 # Multimedia keys
 # https://wiki.archlinux.org/index.php/Sway#Custom_keybindings
+bindsym XF86AudioMute exec wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
+bindsym XF86AudioLowerVolume exec wpctl set-volume @DEFAULT_AUDIO_SINK@ '5%-'
+bindsym XF86AudioRaiseVolume exec wpctl set-volume @DEFAULT_AUDIO_SINK@ '5%+'
+bindsym XF86AudioMicMute exec wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle
+bindsym XF86MonBrightnessDown exec brightnessctl set '10%-'
+bindsym XF86MonBrightnessUp exec brightnessctl set '10%+'
 bindsym Print exec $screenshotfull
+bindsym alt+Print exec $screenshotregional
+
+# Screen lock and screen power
+bindsym $mod+ctrl+l exec swaylock
+bindsym $mod+ctrl+shift+l output $mainscreen dpms toggle
+
+# Lid action
+bindswitch lid:on output $mainscreen dpms off, exec systemctl suspend
+bindswitch lid:off output $mainscreen dpms on
 
 # Autostarts
-exec_always dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway
+exec swayidle
 exec mako
+# exec_always fcitx5 -d --replace

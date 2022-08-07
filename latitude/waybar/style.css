@@ -1,0 +1,21 @@
+@import "/run/current-system/sw/etc/xdg/waybar/style.css";
+
+* {
+  font-family: sans-serif, "Font Awesome 6 Free";
+  font-size: 14px;
+}
+
+#clock {
+  font-weight: bold;
+}
+
+#inhibitor {
+  padding: 0 10px;
+  color: white;
+  background-color: #2d3436;
+}
+
+#inhibitor.activated {
+  background-color: #ecf0f1;
+  color: #2d3436;
+}
