@@ -5,17 +5,30 @@
   font-size: 14px;
 }
 
-#clock {
-  font-weight: bold;
-}
-
 #inhibitor {
   padding: 0 10px;
-  color: white;
+  color: #777777;
   background-color: #2d3436;
 }
 
 #inhibitor.activated {
   background-color: #ecf0f1;
   color: #2d3436;
+}
+
+#bluetooth {
+  padding: 0 10px;
+}
+
+#bluetooth.off, #bluetooth.disabled {
+  color: #777777;
+  background-color: #2d3436;
+}
+
+#bluetooth.on, #bluetooth.connected {
+  background-color: #0082fc;
+}
+
+#bluetooth.discoverable {
+  background-color: green;
 }

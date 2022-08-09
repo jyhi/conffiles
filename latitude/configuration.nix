@@ -92,6 +92,7 @@ in {
   zramSwap.enable = true;
 
   hardware = {
+    bluetooth.enable = true;
     cpu.intel.updateMicrocode = true;
     enableRedistributableFirmware = true;
   };
@@ -125,6 +126,7 @@ in {
         isNormalUser = true;
         initialHashedPassword =
           "$5$qJVeybe.0P7E9CQu$wvN4gJWLVY2U1V.sACa4.KeDw0muEY0yKW/Ez6YQaZB";
+        shell = pkgs.dash;
         extraGroups = [ "wheel" "networkmanager" "libvirtd" ];
       };
     };
@@ -252,7 +254,6 @@ in {
         waybar
         brightnessctl
         wl-clipboard
-        bluez # bluetooth
         libayatana-appindicator # tray
         slurp # screen region selector
         grim # screenshot
@@ -336,15 +337,17 @@ in {
 
   environment.systemPackages = with pkgs; [
     dash
+    file
+    glib
     htop
     mullvad
-    neofetch
     numix-cursor-theme
     numix-gtk-theme
     numix-icon-theme
     numix-icon-theme-square
     pcmanfm-qt
     rclone
+    tree
     unzip
     virt-manager
     virtiofsd

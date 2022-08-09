@@ -29,13 +29,21 @@ workspace_layout tabbed
 
 bar main swaybar_command waybar
 
+seat seat0 xcursor_theme 'Numix-Cursor'
+exec_always {
+  gsettings set org.gnome.desktop.interface gtk-theme 'Numix Light'
+  gsettings set org.gnome.desktop.interface icon-theme 'Numix Square Light'
+  gsettings set org.gnome.desktop.interface cursor-theme 'Numix-Cursor'
+  # gsettings set org.gnome.desktop.interface font-name 'Noto Sans'
+}
+
 # Special treatments
 for_window [app_id="org.keepassxc.KeePassXC" title="KeePassXC - Browser Access Request"] floating enable
 for_window [app_id="pcmanfm-qt"] floating enable
 
 # Frequently used applications
 set $launcher rofi -modi "drun,run,filebrowser" -show-icons -show
-set $terminal alacritty
+set $terminal alacritty --command /run/current-system/sw/bin/bash
 set $webbrowser firefox
 set $mailclient thunderbird
 set $filebrowser pcmanfm-qt
@@ -77,6 +85,7 @@ bindsym $mod+s focus child
 bindsym $mod+grave focus mode_toggle
 
 # Shortcuts - switching workspace
+bindsym $mod+0 workspace number 0
 bindsym $mod+1 workspace number 1
 bindsym $mod+2 workspace number 2
 bindsym $mod+3 workspace number 3
@@ -86,7 +95,6 @@ bindsym $mod+6 workspace number 6
 bindsym $mod+7 workspace number 7
 bindsym $mod+8 workspace number 8
 bindsym $mod+9 workspace number 9
-bindsym $mod+0 workspace number 10
 bindsym $mod+prior workspace prev
 bindsym $mod+next workspace next
 
@@ -97,6 +105,7 @@ bindsym $mod+shift+left move left
 bindsym $mod+shift+right move right
 
 # Shortcuts - moving current focus to workspace
+bindsym $mod+shift+0 move container to workspace number 0
 bindsym $mod+shift+1 move container to workspace number 1
 bindsym $mod+shift+2 move container to workspace number 2
 bindsym $mod+shift+3 move container to workspace number 3
@@ -106,7 +115,6 @@ bindsym $mod+shift+6 move container to workspace number 6
 bindsym $mod+shift+7 move container to workspace number 7
 bindsym $mod+shift+8 move container to workspace number 8
 bindsym $mod+shift+9 move container to workspace number 9
-bindsym $mod+shift+0 move container to workspace number 10
 bindsym $mod+shift+prior move container to workspace prev
 bindsym $mod+shift+next move container to workspace next
 
