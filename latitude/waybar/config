@@ -19,12 +19,18 @@
 
   "pulseaudio": {
     "format": "{icon} {volume} {format_source}",
-    "format-bluetooth": "{icon}\uf293 {volume} {format_source}",
+    "format-bluetooth": "{icon}\uf294 {volume} {format_source}",
     "format-muted": "\uf6a9 {format_source}",
     "format-source": "\uf130 {volume}",
     "format-source-muted": "\uf131",
     "format-icons": {
-      "default": ["\uf027", "\uf028"]
+      "default": ["\uf027", "\uf028"],
+      "headphone": "\uf025",
+      "headset": "\uf025",
+      "hands-free": "\uf025",
+      "portable": "\uf025",
+      "car": "\uf1b9",
+      "phone": "\uf3ce"
     },
     "on-click": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
     "on-click-right": "wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"
@@ -33,7 +39,7 @@
   "bluetooth": {
     "format": "\uf294",
     "format-disabled": "\uf294",
-    "format-connected": "\uf293",
+    "format-connected": "\uf293 {num_connections}",
     "tooltip-format": "\uf109\t{controller_alias}",
     "tooltip-format-connected": "\uf109 {controller_alias} \uf0c1 {num_connections}\n{device_enumerate}",
     "tooltip-format-enumerate-connected": "{device_alias}",

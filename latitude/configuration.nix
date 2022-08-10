@@ -139,26 +139,30 @@ in {
     nftables = {
       enable = true;
       ruleset = ''
-        table inet filter {
-          chain input {
+        table inet firewall {
+          chain in {
             type filter hook input priority filter; policy drop;
 
-            iifname lo accept
-            iifname virbr0 accept
-            ct state {established, related} accept
-            ct state invalid drop
+            iifname "lo" accept
+            iifname "virbr0" accept
 
-            ip protocol icmp accept
+            ct state invalid drop
+            ct state { established, related } accept
+
+            icmp type != { timestamp-request, address-mask-request } accept
             ip6 nexthdr icmpv6 accept
 
             tcp dport 50022 accept
           }
 
-          chain forward {
-            type filter hook forward priority filter; policy accept;
+          chain fw {
+            type filter hook forward priority filter; policy drop;
+
+            iifname "virbr0" accept
+            oifname "virbr0" accept
           }
 
-          chain output {
+          chain out {
             type filter hook output priority filter; policy accept;
           }
         }
@@ -380,6 +384,7 @@ in {
 
     users."jyhi" = {
       directories = [
+        { directory = ".cache/keepassxc"; mode = "0700"; }
         { directory = ".cache/rclone"; mode = "0700"; }
         { directory = ".config/dconf"; mode = "0700"; }
         { directory = ".config/fcitx5"; mode = "0700"; }
@@ -391,6 +396,7 @@ in {
         { directory = ".config/sway"; mode = "0700"; }
         { directory = ".config/swayidle"; mode = "0700"; }
         { directory = ".config/swaylock"; mode = "0700"; }
+        { directory = ".config/VSCodium"; mode = "0700"; }
         { directory = ".config/waybar"; mode = "0700"; }
         { directory = ".gnupg"; mode = "0700"; }
         { directory = ".local/state/wireplumber"; mode = "0700"; }
