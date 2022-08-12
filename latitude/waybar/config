@@ -1,6 +1,6 @@
 {
   "modules-left": ["clock", "tray", "sway/workspaces", "sway/mode"],
-  "modules-right": ["inhibitor", "pulseaudio", "bluetooth", "network", "cpu", "memory", "temperature", "battery"],
+  "modules-right": ["inhibitor", "pulseaudio", "bluetooth", "network", "custom/vpn", "cpu", "memory", "temperature", "battery"],
 
   "clock": {
     "format": "{:%a %d %b %Y %R %Z}",
@@ -57,6 +57,14 @@
     "format-disabled": "\ue22d",
     "tooltip-format": "\uf109\t{ifname}\n\uf0ac\t{ipaddr}/{cidr}\n\uf233\t{gwaddr}",
     "tooltip-format-wifi": "\uf1eb\t{essid} {frequency}GHz {signalStrength}% ({signaldBm}dBm)\n\uf109\t{ifname}\n\uf0ac\t{ipaddr}/{cidr}\n\uf233\t{gwaddr}"
+  },
+
+  "custom/vpn": {
+    "interval": 9,
+    "exec": "$HOME/.config/waybar/scripts/mullvad.sh status",
+    "exec-if": "systemctl is-active mullvad-daemon.service",
+    "on-click": "$HOME/.config/waybar/scripts/mullvad.sh toggle",
+    "escape": true
   },
 
   "cpu": {

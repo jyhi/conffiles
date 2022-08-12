@@ -375,6 +375,7 @@ in {
 
     directories = [
       "/etc/nixos"
+      "/etc/mullvad-vpn"
       { directory = "/etc/NetworkManager/system-connections"; mode = "0700"; }
       "/var/lib"
       "/var/log"

@@ -32,3 +32,23 @@
 #bluetooth.discoverable {
   background-color: green;
 }
+
+#custom-vpn {
+  padding: 0 10px;
+}
+
+#custom-vpn.connected {
+  background-color: green;
+}
+
+#custom-vpn.connecting {
+  background-color: blue;
+}
+
+#custom-vpn.disconnected {
+  background-color: gray;
+}
+
+#custom-vpn.undefined {
+  background-color: orange;
+}
