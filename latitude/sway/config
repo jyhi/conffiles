@@ -11,11 +11,12 @@ input type:touchpad {
 set $mainscreen eDP-1
 
 output $mainscreen {
-  mode 1920x1080@48.010Hz
+  mode 1920x1080@60.033Hz
   scale 1.25
 }
 
-output * background /run/current-system/sw/share/backgrounds/sway/Sway_Wallpaper_Blue_1920x1080.png fit
+# output * background /run/current-system/sw/share/backgrounds/sway/Sway_Wallpaper_Blue_1920x1080.png fit
+output * background /home/jyhi/.config/sway/nix-wallpaper-nineish.src.svg fit
 
 # Wayland go brrr
 xwayland disable

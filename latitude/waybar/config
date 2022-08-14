@@ -60,7 +60,8 @@
   },
 
   "custom/vpn": {
-    "interval": 9,
+    "interval": 6,
+    "return-type": "json",
     "exec": "$HOME/.config/waybar/scripts/mullvad.sh status",
     "exec-if": "systemctl is-active mullvad-daemon.service",
     "on-click": "$HOME/.config/waybar/scripts/mullvad.sh toggle",
@@ -89,7 +90,11 @@
   "battery": {
     "interval": 9,
     "format": "{icon} {capacity}%",
-    "format-icons": ["\uf244", "\uf243", "\uf242", "\uf241", "\uf240"]
+    "format-icons": ["\uf244", "\uf243", "\uf242", "\uf241", "\uf240"],
+    "states": {
+      "low": 20,
+      "crit": 5
+    }
   },
   
   "_unused": ""

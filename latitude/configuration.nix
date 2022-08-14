@@ -20,6 +20,8 @@ in {
       generationsDir.copyKernels = true;
     };
 
+    kernelPackages = pkgs.linuxPackages_latest;
+
     initrd = {
       availableKernelModules = [ "nvme" ];
       luks.devices = {
@@ -93,6 +95,7 @@ in {
 
   hardware = {
     bluetooth.enable = true;
+    gpgSmartcards.enable = true;
     cpu.intel.updateMicrocode = true;
     enableRedistributableFirmware = true;
   };
@@ -127,7 +130,7 @@ in {
         initialHashedPassword =
           "$5$qJVeybe.0P7E9CQu$wvN4gJWLVY2U1V.sACa4.KeDw0muEY0yKW/Ez6YQaZB";
         shell = pkgs.dash;
-        extraGroups = [ "wheel" "networkmanager" "libvirtd" ];
+        extraGroups = [ "cdrom" "dialout" "wheel" "networkmanager" "libvirtd" ];
       };
     };
   };
@@ -152,7 +155,7 @@ in {
             icmp type != { timestamp-request, address-mask-request } accept
             ip6 nexthdr icmpv6 accept
 
-            tcp dport 50022 accept
+            # tcp dport 50022 accept
           }
 
           chain fw {
@@ -160,6 +163,8 @@ in {
 
             iifname "virbr0" accept
             oifname "virbr0" accept
+
+            counter
           }
 
           chain out {
@@ -176,8 +181,16 @@ in {
       ethernet.macAddress = "random";
     };
   };
+  
+  security = {
+    protectKernelImage = true;
+    polkit.enable = true;
+  };
 
   services = {
+    udisks2.enable = true;
+    gvfs.enable = true;
+
     openssh = {
       enable = false;
       ports = [ 50022 ];
@@ -227,7 +240,7 @@ in {
     startLimitBurst = 5;
     startLimitIntervalSec = 20;
     serviceConfig = {
-      ExecStart = "${pkgs.mullvad}/bin/mullvad-daemon -v --disable-stdout-timestamps";
+      ExecStart = "${pkgs.mullvad}/bin/mullvad-daemon --disable-stdout-timestamps";
       Restart = "always";
       RestartSec = 1;
     };
@@ -296,6 +309,8 @@ in {
         runAsRoot = false;
       };
     };
+
+    spiceUSBRedirection.enable = true;
   };
 
   xdg.portal = {
@@ -397,6 +412,7 @@ in {
         { directory = ".config/sway"; mode = "0700"; }
         { directory = ".config/swayidle"; mode = "0700"; }
         { directory = ".config/swaylock"; mode = "0700"; }
+        { directory = ".config/vlc"; mode = "0700"; }
         { directory = ".config/VSCodium"; mode = "0700"; }
         { directory = ".config/waybar"; mode = "0700"; }
         { directory = ".gnupg"; mode = "0700"; }

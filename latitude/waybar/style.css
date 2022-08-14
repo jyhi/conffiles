@@ -33,6 +33,14 @@
   background-color: green;
 }
 
+#battery.low:not(.charging) {
+  background-color: orange;
+}
+
+#battery.crit:not(.charging) {
+  background-color: #f53c3c;
+}
+
 #custom-vpn {
   padding: 0 10px;
 }
