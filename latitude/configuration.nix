@@ -143,31 +143,36 @@ in {
       enable = true;
       ruleset = ''
         table inet firewall {
-          chain in {
+          chain input {
             type filter hook input priority filter; policy drop;
 
-            iifname "lo" accept
-            iifname "virbr0" accept
+            iif "lo" accept
+            iifname "virbr*" accept
 
-            ct state invalid drop
             ct state { established, related } accept
+            ct state invalid counter drop
+            pkttype { broadcast, multicast } limit rate 60/minute accept
+            pkttype { broadcast, multicast } limit rate over 60/minute counter drop
 
-            icmp type != { timestamp-request, address-mask-request } accept
-            ip6 nexthdr icmpv6 accept
+            icmp type != { timestamp-request, address-mask-request } limit rate 10/minute accept
+            icmp type != { timestamp-request, address-mask-request } limit rate over 10/minute counter drop
+            icmp type timestamp-request counter log level warn prefix "ICMPv4 timestamp request drop: " drop
+            icmp type address-mask-request counter log level warn prefix "ICMPv4 address mask request drop: " drop
+            ip6 nexthdr icmpv6 limit rate 10/minute accept
+            ip6 nexthdr icmpv6 limit rate over 10/minute counter drop
 
-            # tcp dport 50022 accept
+            tcp dport 50022 limit rate 3/minute log level notice prefix "SSH new: " accept
+            tcp dport 50022 limit rate over 3/minute counter log level warn prefix "SSH rate limit drop: " drop
           }
 
-          chain fw {
+          chain forward {
             type filter hook forward priority filter; policy drop;
 
-            iifname "virbr0" accept
-            oifname "virbr0" accept
-
-            counter
+            iifname "virbr*" accept
+            oifname "virbr*" accept
           }
 
-          chain out {
+          chain output {
             type filter hook output priority filter; policy accept;
           }
         }
@@ -191,9 +196,16 @@ in {
     udisks2.enable = true;
     gvfs.enable = true;
 
+    resolved = {
+      enable = true;
+      dnssec = "false";
+    };
+
     openssh = {
-      enable = false;
+      enable = true;
       ports = [ 50022 ];
+      startWhenNeeded = true;
+      passwordAuthentication = false;
     };
 
     tlp = {
@@ -201,7 +213,7 @@ in {
       settings = {
         TLP_DEFAULT_MODE = "BAT";
         TLP_PERSISTENT_DEFAULT = 1;
-        CPU_SCALING_GOVERNOR_ON_AC = "powersave";
+        CPU_SCALING_GOVERNOR_ON_AC = "performance";
         CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
         CPU_BOOST_ON_AC = 1;
         CPU_BOOST_ON_BAT = 0;
@@ -248,6 +260,11 @@ in {
 
   programs = {
     vim.defaultEditor = true;
+    
+    ssh = {
+      startAgent = true;
+      agentTimeout = "1h";
+    };
 
     git = {
       enable = true;
@@ -355,6 +372,7 @@ in {
   environment.defaultPackages = lib.mkForce [ ];
 
   environment.systemPackages = with pkgs; [
+    bash
     dash
     file
     glib
@@ -383,6 +401,7 @@ in {
     thunderbird-wayland
     vlc
     vscodium
+    wrangler
   ];
 
   environment.persistence."/nix/pers" = {
@@ -415,13 +434,15 @@ in {
         { directory = ".config/vlc"; mode = "0700"; }
         { directory = ".config/VSCodium"; mode = "0700"; }
         { directory = ".config/waybar"; mode = "0700"; }
-        { directory = ".gnupg"; mode = "0700"; }
         { directory = ".local/state/wireplumber"; mode = "0700"; }
         { directory = ".local/share/fcitx5/rime"; mode = "0700"; }
         { directory = ".local/share/TelegramDesktop"; mode = "0700"; }
+        { directory = ".gnupg"; mode = "0700"; }
         { directory = ".mozilla"; mode = "0700"; }
         { directory = ".ssh"; mode = "0700"; }
         { directory = ".thunderbird"; mode = "0700"; }
+        { directory = ".vscode-oss"; mode = "0700"; }
+        { directory = ".wrangler"; mode = "0700"; }
         "Documents"
         "Downloads"
         "Music"

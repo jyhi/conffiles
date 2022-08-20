@@ -65,6 +65,7 @@
     "exec": "$HOME/.config/waybar/scripts/mullvad.sh status",
     "exec-if": "systemctl is-active mullvad-daemon.service",
     "on-click": "$HOME/.config/waybar/scripts/mullvad.sh toggle",
+    "on-click-right": "mullvad reconnect",
     "escape": true
   },
 
