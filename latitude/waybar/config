@@ -1,5 +1,5 @@
 {
-  "modules-left": ["clock", "tray", "sway/workspaces", "sway/mode"],
+  "modules-left": ["clock", "tray", "sway/workspaces", "sway/scratchpad", "sway/mode"],
   "modules-right": ["inhibitor", "pulseaudio", "bluetooth", "network", "custom/vpn", "cpu", "memory", "temperature", "battery"],
 
   "clock": {
@@ -10,6 +10,10 @@
 
   "sway/mode": {
     "format": "\uf05a {}"
+  },
+
+  "sway/scratchpad": {
+    "format": "\uf2d2 {count}"
   },
 
   "inhibitor": {

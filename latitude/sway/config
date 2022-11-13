@@ -8,15 +8,29 @@ input type:touchpad {
 }
 
 # Outputs
-set $mainscreen eDP-1
+set $out_edp eDP-1
 
-output $mainscreen {
-  mode 1920x1080@60.033Hz
-  scale 1.25
+output * {
+  # background /run/current-system/sw/share/backgrounds/sway/Sway_Wallpaper_Blue_1920x1080.png fill
+  background /home/jyhi/.config/sway/nix-wallpaper-nineish.src.svg fill
+  adaptive_sync on
+
+  # Sorry, but
+  disable
 }
 
-# output * background /run/current-system/sw/share/backgrounds/sway/Sway_Wallpaper_Blue_1920x1080.png fit
-output * background /home/jyhi/.config/sway/nix-wallpaper-nineish.src.svg fit
+output $out_edp {
+  enable
+  scale 1.25
+  subpixel rgb
+  position 0 0
+}
+
+output "Goldstar Company Ltd LG SDQHD 208NTFA4K123" {
+  enable
+  scale 1.5
+  subpixel rgb
+}
 
 # Wayland go brrr
 xwayland disable
@@ -29,6 +43,7 @@ focus_follows_mouse no
 workspace_layout tabbed
 
 bar main swaybar_command waybar
+# bar main position top
 
 seat seat0 xcursor_theme 'Numix-Cursor'
 exec_always {
@@ -152,13 +167,13 @@ bindsym alt+Print exec $screenshotregional
 
 # Screen lock and screen power
 bindsym $mod+ctrl+l exec swaylock
-bindsym $mod+ctrl+shift+l output $mainscreen dpms toggle
+bindsym $mod+ctrl+shift+l output $out_edp dpms toggle
 
 # Lid action
-bindswitch lid:on output $mainscreen dpms off, exec systemctl suspend
-bindswitch lid:off output $mainscreen dpms on
+bindswitch lid:on output $out_edp dpms off, exec systemctl suspend
+bindswitch lid:off output $out_edp dpms on
 
 # Autostarts
-exec swayidle
+exec swayidle -w
 exec mako
 # exec_always fcitx5 -d --replace

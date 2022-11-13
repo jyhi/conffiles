@@ -1,0 +1,6 @@
+timeout 600 "swaymsg output '*' dpms off" resume "swaymsg output '*' dpms on"
+timeout 900 "swaylock -f"
+before-sleep "swaylock -f"
+after-resume "swaymsg output '*' dpms on"
+lock "swaylock -f"
+idlehint 600

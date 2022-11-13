@@ -5,7 +5,7 @@ let
   pathImpermanence = builtins.fetchGit {
     url = "https://github.com/nix-community/impermanence";
     ref = "master";
-    rev = "2f39baeb7d039fda5fc8225111bb79474138e6f4";
+    rev = "def994adbdfc28974e87b0e4c949e776207d5557";
   };
 in {
   imports = [ "${pathImpermanence}/nixos.nix" ];
@@ -108,16 +108,10 @@ in {
   time.timeZone = "Europe/London";
   i18n.defaultLocale = "en_GB.UTF-8";
 
-  environment = {
-    # This breaks Firefox
-    # memoryAllocator.provider = "mimalloc";
-
-    localBinInPath = true;
-    sessionVariables = {
-      # Configure Electron apps to run on Wayland
-      # https://nixos.org/manual/nixos/stable/release-notes.html#sec-release-22.05-notable-changes
-      NIXOS_OZONE_WL = "1";
-    };
+  environment.sessionVariables = {
+    # Configure Electron apps to run on Wayland
+    # https://nixos.org/manual/nixos/stable/release-notes.html#sec-release-22.05-notable-changes
+    NIXOS_OZONE_WL = "1";
   };
 
   users = {
@@ -151,18 +145,15 @@ in {
 
             ct state { established, related } accept
             ct state invalid counter drop
-            pkttype { broadcast, multicast } limit rate 60/minute accept
-            pkttype { broadcast, multicast } limit rate over 60/minute counter drop
 
-            icmp type != { timestamp-request, address-mask-request } limit rate 10/minute accept
-            icmp type != { timestamp-request, address-mask-request } limit rate over 10/minute counter drop
-            icmp type timestamp-request counter log level warn prefix "ICMPv4 timestamp request drop: " drop
-            icmp type address-mask-request counter log level warn prefix "ICMPv4 address mask request drop: " drop
+            icmp type != { timestamp-request, address-mask-request } accept
+            icmp type timestamp-request log level warn prefix "ICMPv4 timestamp request dropped: " counter drop
+            icmp type address-mask-request log level warn prefix "ICMPv4 address mask request dropped: " counter drop
             ip6 nexthdr icmpv6 limit rate 10/minute accept
             ip6 nexthdr icmpv6 limit rate over 10/minute counter drop
 
-            tcp dport 50022 limit rate 3/minute log level notice prefix "SSH new: " accept
-            tcp dport 50022 limit rate over 3/minute counter log level warn prefix "SSH rate limit drop: " drop
+            tcp dport 50022 limit rate 3/minute log level notice prefix "SSH new: " counter accept
+            tcp dport 50022 limit rate over 3/minute log level warn prefix "SSH rate limit: " counter drop
           }
 
           chain forward {
@@ -377,6 +368,7 @@ in {
     file
     glib
     htop
+    mtr
     mullvad
     numix-cursor-theme
     numix-gtk-theme
@@ -394,6 +386,7 @@ in {
 
   users.users."jyhi".packages = with pkgs; [
     alacritty
+    cargo
     firefox-wayland
     keepassxc
     libreoffice-fresh
@@ -401,7 +394,6 @@ in {
     thunderbird-wayland
     vlc
     vscodium
-    wrangler
   ];
 
   environment.persistence."/nix/pers" = {
@@ -421,6 +413,7 @@ in {
       directories = [
         { directory = ".cache/keepassxc"; mode = "0700"; }
         { directory = ".cache/rclone"; mode = "0700"; }
+        { directory = ".cargo"; mode = "0700"; }
         { directory = ".config/dconf"; mode = "0700"; }
         { directory = ".config/fcitx5"; mode = "0700"; }
         { directory = ".config/htop"; mode = "0700"; }
